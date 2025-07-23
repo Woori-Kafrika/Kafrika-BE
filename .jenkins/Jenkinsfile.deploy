@@ -1,0 +1,102 @@
+pipeline {
+    agent any
+    
+    environment {
+        DEPLOY_PATH = '/opt/kafrika-backend'
+        APP_NAME = 'demo-0.0.1-SNAPSHOT.jar'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                script {
+                    // 배포 디렉토리 생성
+                    sh "mkdir -p ${DEPLOY_PATH}"
+                    
+                    // 애플리케이션 중지
+                    sh "pkill -f ${APP_NAME} || true"
+                    
+                    // 백업 생성
+                    sh """
+                        if [ -f "${DEPLOY_PATH}/${APP_NAME}" ]; then
+                            cp ${DEPLOY_PATH}/${APP_NAME} ${DEPLOY_PATH}/${APP_NAME}.backup.\$(date +%Y%m%d_%H%M%S)
+                        fi
+                    """
+                    
+                    // 새 버전 복사
+                    sh "cp target/${APP_NAME} ${DEPLOY_PATH}/"
+                    
+                    // 실행 권한 부여
+                    sh "chmod +x ${DEPLOY_PATH}/${APP_NAME}"
+                }
+            }
+        }
+        
+        stage('Start Application') {
+            steps {
+                script {
+                    // 애플리케이션 시작
+                    sh """
+                        cd ${DEPLOY_PATH}
+                        nohup java -jar ${APP_NAME} > app.log 2>&1 &
+                        echo \$! > app.pid
+                    """
+                    
+                    // 시작 대기
+                    sleep 10
+                }
+            }
+        }
+        
+        stage('Health Check') {
+            steps {
+                script {
+                    // 헬스 체크
+                    sh """
+                        for i in {1..30}; do
+                            if curl -f http://localhost:8080/actuator/health > /dev/null 2>&1; then
+                                echo "Health check passed"
+                                exit 0
+                            fi
+                            echo "Health check attempt \$i/30"
+                            sleep 2
+                        done
+                        echo "Health check failed"
+                        exit 1
+                    """
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
+            script {
+                // 롤백 실행
+                sh """
+                    cd ${DEPLOY_PATH}
+                    ./rollback.sh || echo "Rollback failed"
+                """
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+} 
