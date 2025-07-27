@@ -27,7 +27,7 @@ import org.springframework.web.util.WebUtils;
 
 @Slf4j
 @RestControllerAdvice
-public class BaseExceptionControllerAdvice {
+public class BaseExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class, NoHandlerFoundException.class, TypeMismatchException.class})
