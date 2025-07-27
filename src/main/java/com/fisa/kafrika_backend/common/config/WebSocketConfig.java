@@ -1,4 +1,4 @@
-package com.fisa.kafrika_backend.config;
+package com.fisa.kafrika_backend.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
