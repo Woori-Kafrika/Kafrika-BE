@@ -11,9 +11,9 @@ import jakarta.validation.constraints.NotBlank;
 public class PostUserLoginRequest {
 
     @NotBlank
-    private String loginId;
+    private String id;
 
     @NotBlank
-    private String loginPw;
+    private String pw;
 
 }

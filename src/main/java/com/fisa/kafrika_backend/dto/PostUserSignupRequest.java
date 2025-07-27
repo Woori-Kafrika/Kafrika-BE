@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 public class PostUserSignupRequest {
 
     @NotBlank
-    private String loginId;
+    private String name;
 
     @NotBlank
-    private String loginPw;
+    private String id;
+
+    @NotBlank
+    private String pw;
 }
