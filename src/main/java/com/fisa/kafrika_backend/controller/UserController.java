@@ -9,18 +9,21 @@ import com.fisa.kafrika_backend.common.response.BaseResponse;
 import com.fisa.kafrika_backend.common.response.SuccessResponse;
 import com.fisa.kafrika_backend.dto.PostUserLoginRequest;
 import com.fisa.kafrika_backend.dto.PostUserSignupRequest;
+import com.fisa.kafrika_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
+
+    private final UserService userService;
 
     @PostMapping("/signup")
     public BaseResponse<SuccessResponse> signup(@Validated @RequestBody PostUserSignupRequest postUserSignupRequest, BindingResult bindingResult) {
@@ -28,7 +31,7 @@ public class UserController {
             throw new CustomException(INVALID_USER_SIGNUP, getErrorMessage(bindingResult));
         }
 
-        // TODO: 회원가입 로직 처리
+        userService.signup(postUserSignupRequest);
 
         return new BaseResponse<>(new SuccessResponse(true));
     }
@@ -39,7 +42,7 @@ public class UserController {
             throw new CustomException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
-        // TODO: 로그인 로직 처리
+        userService.login(postUserLoginRequest);
 
         return new BaseResponse<>(new SuccessResponse(true));
     }
