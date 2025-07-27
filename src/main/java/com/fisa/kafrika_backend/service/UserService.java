@@ -35,7 +35,7 @@ public class UserService {
                 .build());
     }
 
-    public void login(PostUserLoginRequest postUserLoginRequest) {
+    public long login(PostUserLoginRequest postUserLoginRequest) {
         String loginId = postUserLoginRequest.getId();
         Optional<User> user = userRepository.findByLoginId(loginId);
 
@@ -47,5 +47,7 @@ public class UserService {
         if (!user.get().getLoginPw().equals(loginPw)) {
             throw new CustomException(PASSWORD_NOT_MATCH);
         }
+
+        return user.get().getId();
     }
 }
