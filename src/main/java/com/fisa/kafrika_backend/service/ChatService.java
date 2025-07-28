@@ -1,5 +1,6 @@
 package com.fisa.kafrika_backend.service;
 
+import static com.fisa.kafrika_backend.common.config.ChatRoomInitializer.DEFAULT_CHATROOM;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_FOUND;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.USER_NOT_FOUND;
 
@@ -15,7 +16,6 @@ import com.fisa.kafrika_backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChatService {
 
-    @Value("${chat.room.default-name}")
-    private String defaultRoomName;
-
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
 
     @Transactional(readOnly = true)
     public ArrayList<ChatMessageResponse> readChatMessageLog() {
-        ChatRoom chatRoom = chatRoomRepository.findByName(defaultRoomName)
+        ChatRoom chatRoom = chatRoomRepository.findByName(DEFAULT_CHATROOM)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
         return chattingRepository.findByChatRoom(chatRoom).stream()
@@ -48,7 +45,7 @@ public class ChatService {
 
     @Transactional
     public ChatMessageResponse sendChatMessage(ChatMessageRequest chatMessageRequest) {
-        ChatRoom chatRoom = chatRoomRepository.findByName(defaultRoomName)
+        ChatRoom chatRoom = chatRoomRepository.findByName(DEFAULT_CHATROOM)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
         User user = userRepository.findById(chatMessageRequest.getUserId())

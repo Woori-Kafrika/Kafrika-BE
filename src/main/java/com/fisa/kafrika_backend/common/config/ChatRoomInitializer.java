@@ -3,7 +3,6 @@ package com.fisa.kafrika_backend.common.config;
 import com.fisa.kafrika_backend.entity.ChatRoom;
 import com.fisa.kafrika_backend.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,17 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChatRoomInitializer implements CommandLineRunner {
 
-    @Value("${chat.room.default-name}")
-    private String defaultRoomName;
+    public static final String DEFAULT_CHATROOM = "default-chatroom";
 
     private final ChatRoomRepository chatRoomRepository;
 
     @Override
     @Transactional
     public void run(String... args) {
-        if (chatRoomRepository.findByName(defaultRoomName).isEmpty()) {
+        if (chatRoomRepository.findByName(DEFAULT_CHATROOM).isEmpty()) {
             chatRoomRepository.save(ChatRoom.builder()
-                    .name(defaultRoomName)
+                    .name(DEFAULT_CHATROOM)
                     .build());
             System.out.println("디폴트 채팅방 생성 완료");
         }
