@@ -68,3 +68,8 @@ spring:
 
   messages:
     basename: errors
+
+---
+chat:
+  room:
+    default-name: ${DEFAULT_CHATROOM}
