@@ -8,6 +8,7 @@ import com.fisa.kafrika_backend.common.exception.CustomException;
 import com.fisa.kafrika_backend.common.response.BaseResponse;
 import com.fisa.kafrika_backend.common.response.SuccessResponse;
 import com.fisa.kafrika_backend.dto.PostUserLoginRequest;
+import com.fisa.kafrika_backend.dto.PostUserLoginResponse;
 import com.fisa.kafrika_backend.dto.PostUserSignupRequest;
 import com.fisa.kafrika_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<SuccessResponse> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult) {
+    public BaseResponse<PostUserLoginResponse> login(@Validated @RequestBody PostUserLoginRequest postUserLoginRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(INVALID_USER_LOGIN, getErrorMessage(bindingResult));
         }
 
-        userService.login(postUserLoginRequest);
+        long userId = userService.login(postUserLoginRequest);
 
-        return new BaseResponse<>(new SuccessResponse(true));
+        return new BaseResponse<>(new PostUserLoginResponse(userId));
     }
 }

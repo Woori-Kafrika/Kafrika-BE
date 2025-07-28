@@ -12,30 +12,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "ChatRoom")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class ChatRoom extends BaseEntity{
 
     @Id @GeneratedValue
     @NotNull
-    @Column(name = "user_id")
+    @Column(name = "chatroom_id")
     private long id;
 
     @NotNull
-    @Column(name = "user_name")
+    @Column(name = "chatroom_name")
     private String name;
 
-    @NotNull
-    private String loginId;
-
-    @NotNull
-    private String loginPw;
-
     @Builder
-    private User(String name, String loginId, String loginPw) {
+    public ChatRoom(String name) {
         this.name = name;
-        this.loginId = loginId;
-        this.loginPw = loginPw;
     }
 }
