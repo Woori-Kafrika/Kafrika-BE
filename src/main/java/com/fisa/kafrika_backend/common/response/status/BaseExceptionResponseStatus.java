@@ -34,7 +34,13 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     DUPLICATE_ID(4001, HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
     INVALID_USER_LOGIN(4002, HttpStatus.BAD_REQUEST, "로그인 요청에서 잘못된 값이 존재합니다."),
     ID_NOT_FOUND(4003, HttpStatus.NOT_FOUND, "존재하지 않는 아이디입니다."),
-    PASSWORD_NOT_MATCH(4004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+    PASSWORD_NOT_MATCH(4004, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    USER_NOT_FOUND(4005, HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+
+    /**
+     * 5000: Chat 오류
+     */
+    CHATROOM_NOT_FOUND(5000, HttpStatus.BAD_REQUEST, "채팅방을 찾을 수 없습니다.");
 
     private final int code;
     private final HttpStatus status;
