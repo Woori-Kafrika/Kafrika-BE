@@ -30,6 +30,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
 
+    @Transactional(readOnly = true)
     public ArrayList<ChatMessageResponse> readChatMessageLog() {
         ChatRoom chatRoom = chatRoomRepository.findByName(defaultRoomName)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));

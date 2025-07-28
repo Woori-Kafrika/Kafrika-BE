@@ -12,6 +12,7 @@ import com.fisa.kafrika_backend.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public void signup(PostUserSignupRequest postUserSignupRequest) {
         String loginId = postUserSignupRequest.getId();
 
@@ -35,6 +37,7 @@ public class UserService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public long login(PostUserLoginRequest postUserLoginRequest) {
         String loginId = postUserLoginRequest.getId();
         Optional<User> user = userRepository.findByLoginId(loginId);
