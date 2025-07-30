@@ -1,6 +1,6 @@
 package com.fisa.kafrika_backend.service;
 
-import static com.fisa.kafrika_backend.common.config.ChatRoomInitializer.DEFAULT_CHATROOM;
+import static com.fisa.kafrika_backend.common.config.ChatSetInitializer.DEFAULT_CHATROOM;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_FOUND;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.USER_NOT_FOUND;
 
