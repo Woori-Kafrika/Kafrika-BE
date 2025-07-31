@@ -4,6 +4,8 @@ import static com.fisa.kafrika_backend.common.config.ChatSetInitializer.DEFAULT_
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_FOUND;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.USER_NOT_FOUND;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fisa.kafrika_backend.common.exception.CustomException;
 import com.fisa.kafrika_backend.dto.ChatMessageRequest;
 import com.fisa.kafrika_backend.dto.ChatMessageResponse;
@@ -16,6 +18,7 @@ import com.fisa.kafrika_backend.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,8 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
+    private final ObjectMapper objectMapper;
+    private final KafkaTemplate kafkaTemplate;
 
     @Transactional(readOnly = true)
     public ArrayList<ChatMessageResponse> readChatMessageLog() {
@@ -66,5 +71,16 @@ public class ChatService {
                 .message(saved.getDetailMessage())
                 .sendAt(saved.getCreatedAt())
                 .build();
+    }
+
+    public void sendKafkaChatMessage(ChatMessageRequest chatMessageRequest) {
+        try {
+            String message = objectMapper.writeValueAsString(chatMessageRequest);
+            System.out.println("직렬화 완료");
+            kafkaTemplate.send("chat-message", String.valueOf(chatMessageRequest.getUserId()), message);
+        } catch (JsonProcessingException e) {
+            // TODO: db에 저장?
+            throw new RuntimeException("Kafka 직렬화 실패", e);
+        }
     }
 }
