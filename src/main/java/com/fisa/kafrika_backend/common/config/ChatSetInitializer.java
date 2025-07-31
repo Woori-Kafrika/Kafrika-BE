@@ -33,6 +33,19 @@ public class ChatSetInitializer implements CommandLineRunner {
             System.out.println("어드민 유저 생성 완료");
         }
 
+        for (int i = 1; i <= 10_000; i++) {
+            String loginId = "user" + i;
+            if (userRepository.findByLoginId(loginId).isEmpty()) {
+                userRepository.save(User.builder()
+                        .name("user" + i)
+                        .loginId(loginId)
+                        .loginPw("pw" + i)
+                        .build());
+            }
+        }
+        System.out.println("1만 명 유저 생성 완료");
+
+
         if (chatRoomRepository.findByName(DEFAULT_CHATROOM).isEmpty()) {
             chatRoomRepository.save(ChatRoom.builder()
                     .name(DEFAULT_CHATROOM)
