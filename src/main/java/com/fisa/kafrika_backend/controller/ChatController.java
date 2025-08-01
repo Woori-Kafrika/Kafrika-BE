@@ -31,11 +31,18 @@ public class ChatController {
         }
     }
 
-    // 채팅 전송
+    // 채팅 전송: 카프카 미사용
     @MessageMapping("/chat")
     @SendTo("/sub/chat")
     public ChatMessageResponse sendChatMessage (@Payload ChatMessageRequest chatMessageRequest) {
         return chatService.sendChatMessage(chatMessageRequest);
+    }
+
+    // 채팅 전송: 카프카 사용
+    @MessageMapping("/kafka-chat")
+    public void sendKafkaChatMessage(@Payload ChatMessageRequest chatMessageRequest) {
+        System.out.println("카프카 컨트롤러 시작");
+        chatService.sendKafkaChatMessage(chatMessageRequest);
     }
 
 }
