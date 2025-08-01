@@ -31,7 +31,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
     private final ObjectMapper objectMapper;
-    private final KafkaTemplate kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Transactional(readOnly = true)
     public ArrayList<ChatMessageResponse> readChatMessageLog() {
