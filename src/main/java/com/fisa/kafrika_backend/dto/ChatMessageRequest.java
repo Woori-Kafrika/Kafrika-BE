@@ -8,4 +8,6 @@ public class ChatMessageRequest {
     private Long userId;
 
     private String message;
+
+    private String sendAt;
 }

@@ -51,7 +51,7 @@ public class ChatKafkaListener {
                             .user(user)
                             .build());
 
-            messagingTemplate.convertAndSend("/sub/chat", chatMessageRequest);
+            messagingTemplate.convertAndSend("/topic/chat", chatMessageRequest);
             log.info("브로드캐스트 완료");
         } catch (Exception e) {
             log.error("Kafka 처리 실패", e);
