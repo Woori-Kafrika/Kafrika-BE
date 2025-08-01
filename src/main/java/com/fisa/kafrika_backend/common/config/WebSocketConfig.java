@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 메세지 구독 엔드포인트
-        registry.enableSimpleBroker("/sub");
+        registry.enableSimpleBroker("/topic");
 
         // 메세지 발행 엔드포인트
         registry.setApplicationDestinationPrefixes("/pub");

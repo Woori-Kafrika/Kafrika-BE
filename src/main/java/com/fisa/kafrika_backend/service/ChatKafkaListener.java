@@ -24,13 +24,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChatKafkaListener {
 
+    public static final String KAFKA_TOPIC = "chat-message";
+    public static final String KAFKA_CONSUMER_GROUP_ID = "chat-consumer-group";
+
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
     private final ChattingRepository chattingRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
 
-    @KafkaListener(topics = "chat-message", groupId = "chat-consumer-group")
+    @KafkaListener(topics = KAFKA_TOPIC, groupId = KAFKA_CONSUMER_GROUP_ID)
     public void consume(String message) {
         try {
             System.out.println("consume 진입");
@@ -48,7 +51,7 @@ public class ChatKafkaListener {
                             .user(user)
                             .build());
 
-            messagingTemplate.convertAndSend("/sub/chat", chatMessageRequest);
+            messagingTemplate.convertAndSend("/topic/chat", chatMessageRequest);
             log.info("브로드캐스트 완료");
         } catch (Exception e) {
             log.error("Kafka 처리 실패", e);

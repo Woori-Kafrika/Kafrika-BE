@@ -3,6 +3,7 @@ package com.fisa.kafrika_backend.service;
 import static com.fisa.kafrika_backend.common.config.ChatSetInitializer.DEFAULT_CHATROOM;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.CHATROOM_NOT_FOUND;
 import static com.fisa.kafrika_backend.common.response.status.BaseExceptionResponseStatus.USER_NOT_FOUND;
+import static com.fisa.kafrika_backend.service.ChatKafkaListener.KAFKA_TOPIC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
     private final ObjectMapper objectMapper;
-    private final KafkaTemplate kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Transactional(readOnly = true)
     public ArrayList<ChatMessageResponse> readChatMessageLog() {
@@ -77,7 +78,7 @@ public class ChatService {
         try {
             String message = objectMapper.writeValueAsString(chatMessageRequest);
             System.out.println("직렬화 완료");
-            kafkaTemplate.send("chat-message", String.valueOf(chatMessageRequest.getUserId()), message);
+            kafkaTemplate.send(KAFKA_TOPIC, String.valueOf(chatMessageRequest.getUserId()), message);
         } catch (JsonProcessingException e) {
             // TODO: db에 저장?
             throw new RuntimeException("Kafka 직렬화 실패", e);

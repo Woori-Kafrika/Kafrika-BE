@@ -33,7 +33,7 @@ public class ChatController {
 
     // 채팅 전송: 카프카 미사용
     @MessageMapping("/chat")
-    @SendTo("/sub/chat")
+    @SendTo("/topic/chat")
     public ChatMessageResponse sendChatMessage (@Payload ChatMessageRequest chatMessageRequest) {
         return chatService.sendChatMessage(chatMessageRequest);
     }
