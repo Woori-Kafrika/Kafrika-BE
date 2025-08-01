@@ -7,6 +7,7 @@ import static com.fisa.kafrika_backend.common.response.status.BaseExceptionRespo
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fisa.kafrika_backend.common.exception.CustomException;
 import com.fisa.kafrika_backend.dto.ChatMessageRequest;
+import com.fisa.kafrika_backend.dto.ChatMessageResponse;
 import com.fisa.kafrika_backend.entity.ChatMessage;
 import com.fisa.kafrika_backend.entity.ChatRoom;
 import com.fisa.kafrika_backend.entity.User;
@@ -45,13 +46,20 @@ public class ChatKafkaListener {
             User user = userRepository.findById(chatMessageRequest.getUserId())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-            chattingRepository.save(ChatMessage.builder()
+            ChatMessage saved = chattingRepository.save(ChatMessage.builder()
                             .detailMessage(chatMessageRequest.getMessage())
                             .chatRoom(chatRoom)
                             .user(user)
                             .build());
 
-            messagingTemplate.convertAndSend("/topic/chat", chatMessageRequest);
+            messagingTemplate.convertAndSend("/topic/chat", ChatMessageResponse.builder()
+                    .id(saved.getId())
+                    .senderId(user.getId())
+                    .senderName(user.getName())
+                    .message(saved.getDetailMessage())
+                    .sendAt(saved.getCreatedAt())
+                    .build());
+
             log.info("브로드캐스트 완료");
         } catch (Exception e) {
             log.error("Kafka 처리 실패", e);
